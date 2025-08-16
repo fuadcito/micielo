@@ -1,226 +1,642 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>To My Fifita</title>
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Great+Vibes&display=swap" rel="stylesheet">
-  <link rel="icon" href="apple-touch-icon.png"type="image/png">
-
-
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: url("IMG-20250715-WA0014.jpg") no-repeat center/cover;
-      font-family: 'Great Vibes', cursive;
-      overflow: hidden;
-    }
-
-    .overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); }
-
-    .container {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      color: white;
-    }
-
-    #hint {
-      font-family: 'Dancing Script', cursive;
-      font-size: 28px;
-      margin-bottom: 20px;
-      z-index: 2;
-      position: relative;
-    }
-
-    .envelope {
-      font-size: 100px;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-      z-index: 2;
-      position: relative;
-    }
-
-    .envelope.clicked { transform: scale(1.2) rotate(-10deg); }
-
-    .blocks {
-      display: none;
-      position: relative;
-      top: 60%;
-      left: 50%;
-      transform: translate(-50%, 0);
-      width: 480px;
-      height: 480px;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, 1fr);
-      gap: 10px;
-      padding: 10px;
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-      z-index: 2;
-    }
-
-    .blocks.show {
-      display: grid;
-      animation: fadeIn 0.8s forwards;
-    }
-
-    .block {
-      background: #f8f8f8;
-      border-radius: 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 36px;
-      transition: background 0.3s, transform 0.2s;
-      user-select: none;
-    }
-
-    .block p {
-      margin: 8px 0 0 0;
-      font-size: 18px;
-      font-family: 'Dancing Script', cursive;
-      color: #333;
-    }
-
-    .block.active { background: #eb6e81; }
-    .block:hover { transform: scale(1.05); }
-
-    @keyframes fadeIn {
-      from {opacity: 0; transform: translate(-50%, -20px);}
-      to {opacity: 1; transform: translate(-50%, 0);}
-    }
-
-    /* Fancy confetti */
-    .confetti {
-      position: absolute;
-      width: 8px;
-      height: 12px;
-      opacity: 0.9;
-      z-index: 1;
-      pointer-events: none;
-      transform-origin: center;
-      border-radius: 2px;
-    }
-  </style>
+    <link rel="icon" href="apple-touch-icon.png"type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Date Invitation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Great+Vibes&family=Playfair+Display:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap');
+        
+        .font-dancing { font-family: 'Dancing Script', cursive; }
+        .font-vibes { font-family: 'Great Vibes', cursive; }
+        .font-playfair { font-family: 'Playfair Display', serif; }
+        .font-cormorant { font-family: 'Cormorant Garamond', serif; }
+        
+        .envelope {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .envelope:hover {
+            transform: scale(1.05);
+        }
+        
+        .envelope-part {
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+        
+        .envelope-back {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f8f6f0 0%, #e8e6e0 50%, #f0ede7 100%);
+            box-shadow: 
+                0 8px 32px rgba(0,0,0,0.1),
+                inset 0 1px 0 rgba(255,255,255,0.8),
+                inset 0 -1px 0 rgba(0,0,0,0.1);
+            border: 1px solid #d4d1ca;
+        }
+        
+        .envelope-flap {
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(135deg, #f5f3ed 0%, #ebe9e3 50%, #f0ede7 100%);
+            top: 0;
+            transform-origin: bottom;
+            z-index: 2;
+            box-shadow: 
+                0 4px 16px rgba(0,0,0,0.15),
+                inset 0 1px 0 rgba(255,255,255,0.9),
+                inset 0 -1px 0 rgba(0,0,0,0.1);
+            border: 1px solid #d4d1ca;
+            border-bottom: none;
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+        }
+        
+        .envelope-front {
+            width: 100%;
+            height: 75%;
+            background: linear-gradient(135deg, #f8f6f0 0%, #e8e6e0 50%, #f0ede7 100%);
+            bottom: 0;
+            z-index: 1;
+            box-shadow: 
+                0 6px 24px rgba(0,0,0,0.12),
+                inset 0 1px 0 rgba(255,255,255,0.8),
+                inset 0 -1px 0 rgba(0,0,0,0.1);
+            border: 1px solid #d4d1ca;
+            border-top: none;
+        }
+        
+        .torn-1 { 
+            animation: rip1 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        .torn-2 { 
+            animation: rip2 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        .torn-3 { 
+            animation: rip3 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        .torn-4 { 
+            animation: rip4 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        .torn-5 { 
+            animation: rip5 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+        }
+        
+        @keyframes rip1 {
+            0% { 
+                transform: translateX(0) rotate(0deg) scale(1); 
+                opacity: 1;
+                filter: blur(0px);
+            }
+            15% { 
+                transform: translateX(-3px) rotate(-2deg) scale(1.02); 
+                opacity: 0.95;
+            }
+            35% { 
+                transform: translateX(-12px) rotate(-8deg) scale(0.98); 
+                opacity: 0.85;
+                filter: blur(0.5px);
+            }
+            65% { 
+                transform: translateX(-28px) rotate(-18deg) scale(0.92); 
+                opacity: 0.6;
+                filter: blur(1px);
+            }
+            100% { 
+                transform: translateX(-45px) rotate(-35deg) scale(0.8); 
+                opacity: 0.3;
+                filter: blur(2px);
+            }
+        }
+        
+        @keyframes rip2 {
+            0% { 
+                transform: translateX(0) rotate(0deg) scale(1); 
+                opacity: 1;
+                filter: blur(0px);
+            }
+            20% { 
+                transform: translateX(4px) rotate(3deg) scale(1.01); 
+                opacity: 0.9;
+            }
+            40% { 
+                transform: translateX(15px) rotate(12deg) scale(0.96); 
+                opacity: 0.75;
+                filter: blur(0.5px);
+            }
+            70% { 
+                transform: translateX(32px) rotate(25deg) scale(0.88); 
+                opacity: 0.5;
+                filter: blur(1px);
+            }
+            100% { 
+                transform: translateX(50px) rotate(40deg) scale(0.75); 
+                opacity: 0.2;
+                filter: blur(2px);
+            }
+        }
+        
+        @keyframes rip3 {
+            0% { 
+                transform: translateY(0) rotate(0deg) scale(1); 
+                opacity: 1;
+                filter: blur(0px);
+            }
+            25% { 
+                transform: translateY(-10px) rotate(-5deg) scale(0.98); 
+                opacity: 0.85;
+            }
+            50% { 
+                transform: translateY(-25px) rotate(-15deg) scale(0.9); 
+                opacity: 0.65;
+                filter: blur(1px);
+            }
+            75% { 
+                transform: translateY(-42px) rotate(-28deg) scale(0.8); 
+                opacity: 0.4;
+                filter: blur(1.5px);
+            }
+            100% { 
+                transform: translateY(-60px) rotate(-45deg) scale(0.6); 
+                opacity: 0.1;
+                filter: blur(3px);
+            }
+        }
+        
+        @keyframes rip4 {
+            0% { 
+                transform: translateY(0) rotate(0deg) scale(1); 
+                opacity: 1;
+                filter: blur(0px);
+            }
+            30% { 
+                transform: translateY(12px) rotate(8deg) scale(0.95); 
+                opacity: 0.8;
+            }
+            55% { 
+                transform: translateY(28px) rotate(20deg) scale(0.85); 
+                opacity: 0.6;
+                filter: blur(1px);
+            }
+            80% { 
+                transform: translateY(45px) rotate(35deg) scale(0.7); 
+                opacity: 0.3;
+                filter: blur(2px);
+            }
+            100% { 
+                transform: translateY(65px) rotate(50deg) scale(0.5); 
+                opacity: 0.05;
+                filter: blur(4px);
+            }
+        }
+        
+        @keyframes rip5 {
+            0% { 
+                transform: scale(1) rotate(0deg); 
+                opacity: 1;
+                filter: blur(0px);
+            }
+            20% { 
+                transform: scale(0.95) rotate(10deg); 
+                opacity: 0.9;
+            }
+            40% { 
+                transform: scale(0.8) rotate(25deg); 
+                opacity: 0.7;
+                filter: blur(1px);
+            }
+            60% { 
+                transform: scale(0.6) rotate(45deg); 
+                opacity: 0.5;
+                filter: blur(2px);
+            }
+            80% { 
+                transform: scale(0.3) rotate(70deg); 
+                opacity: 0.2;
+                filter: blur(3px);
+            }
+            100% { 
+                transform: scale(0) rotate(90deg); 
+                opacity: 0;
+                filter: blur(5px);
+            }
+        }
+        
+        .letter {
+            background: #FFF8DC;
+            border: 2px solid #DDD;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: scale(0);
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .letter.show {
+            transform: scale(1);
+        }
+        
+        .penguin {
+            font-size: 4rem;
+            animation: waddle 2s ease-in-out infinite;
+        }
+        
+        @keyframes waddle {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+        
+        .broken-heart {
+            animation: heartbreak 1s ease-in-out;
+        }
+        
+        @keyframes heartbreak {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.2) rotate(-5deg); }
+            50% { transform: scale(0.8) rotate(5deg); }
+            75% { transform: scale(1.1) rotate(-3deg); }
+            100% { transform: scale(1); }
+        }
+        
+        .date-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .date-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .celebrating {
+            animation: celebrate 1s ease-in-out;
+        }
+        
+        @keyframes celebrate {
+            0% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.2) rotate(-10deg); }
+            50% { transform: scale(1.3) rotate(10deg); }
+            75% { transform: scale(1.1) rotate(-5deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        
+        .rose-petals {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .petal {
+            position: absolute;
+            color: #ff69b4;
+            font-size: 20px;
+            animation: fall linear infinite;
+            opacity: 0.7;
+        }
+        
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .petal:nth-child(1) { left: 10%; animation-duration: 8s; animation-delay: 0s; }
+        .petal:nth-child(2) { left: 20%; animation-duration: 10s; animation-delay: 1s; }
+        .petal:nth-child(3) { left: 30%; animation-duration: 7s; animation-delay: 2s; }
+        .petal:nth-child(4) { left: 40%; animation-duration: 9s; animation-delay: 0.5s; }
+        .petal:nth-child(5) { left: 50%; animation-duration: 11s; animation-delay: 1.5s; }
+        .petal:nth-child(6) { left: 60%; animation-duration: 8s; animation-delay: 3s; }
+        .petal:nth-child(7) { left: 70%; animation-duration: 12s; animation-delay: 2.5s; }
+        .petal:nth-child(8) { left: 80%; animation-duration: 9s; animation-delay: 4s; }
+        .petal:nth-child(9) { left: 90%; animation-duration: 10s; animation-delay: 0.8s; }
+        .petal:nth-child(10) { left: 15%; animation-duration: 7s; animation-delay: 3.5s; }
+        .petal:nth-child(11) { left: 25%; animation-duration: 11s; animation-delay: 1.2s; }
+        .petal:nth-child(12) { left: 35%; animation-duration: 8s; animation-delay: 4.5s; }
+        .petal:nth-child(13) { left: 45%; animation-duration: 9s; animation-delay: 2.8s; }
+        .petal:nth-child(14) { left: 55%; animation-duration: 10s; animation-delay: 0.3s; }
+        .petal:nth-child(15) { left: 65%; animation-duration: 12s; animation-delay: 3.8s; }
+    </style>
 </head>
-<body>
-  <div class="overlay"></div>
-  <div class="container">
-    <p id="hint">For your eyes only, mi cielo 💖</p>
-    <div id="envelope" class="envelope">💌</div>
-
-    <!-- 3x3 Blocks grid -->
-    <div id="blocks" class="blocks">
-      <div class="block">⛸️<p>Ice Skating</p></div>
-      <div class="block">🏺<p>Pottery</p></div>
-      <div class="block">🛶<p>Kayaking</p></div>
-      <div class="block">🏞️🧺<p>Hiking/Picnic</p></div>
-      <div class="block">🍿<p>Cinema</p></div>
-      <div class="block">🏖️<p>Beach</p></div>
-      <div class="block">🎳🕹️<p>Bowling/Arcade</p></div>
-      <div class="block">⛳<p>Golf</p></div>
-      <div class="block">🕵<p>Escape Room</p></div>
+<body class="font-inter bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 min-h-screen flex items-center justify-center">
+    
+    <!-- Rose Petals Background -->
+    <div class="rose-petals">
+        <div class="petal">🌹</div>
+        <div class="petal">🌸</div>
+        <div class="petal">🌹</div>
+        <div class="petal">🌸</div>
+        <div class="petal">🌹</div>
+        <div class="petal">🌸</div>
+        <div class="petal">🌹</div>
+        <div class="petal">🌸</div>
+        <div class="petal">🌹</div>
+        <div class="petal">🌸</div>
+        <div class="petal">🌹</div>
+        <div class="petal">🌸</div>
+        <div class="petal">🌹</div>
+        <div class="petal">🌸</div>
+        <div class="petal">🌹</div>
     </div>
-  </div>
+    
+    <!-- Screen 1: Envelope -->
+    <div id="envelopeScreen" class="text-center">
+        <h1 class="font-vibes text-5xl text-pink-700 mb-8 floating" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">
+            Aşşşkıımmm, I have envelope for youu 💌
+        </h1>
+        
+        <div class="envelope mx-auto" onclick="tearEnvelope()">
+            <div class="envelope-part envelope-back"></div>
+            <div class="envelope-part envelope-front" id="envelopeFront"></div>
+            <div class="envelope-part envelope-flap" id="envelopeFlap"></div>
+            
+            <!-- Envelope decorations -->
+            <div class="absolute top-2 left-2 text-pink-700 text-sm font-dancing font-medium" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">To: La Princesa de Mi Corazón</div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-3xl">🐣</div>
+            <div class="absolute bottom-4 left-4 text-pink-500 text-xl">✨</div>
+        </div>
+        
 
-  <script>
-    const envelope = document.getElementById("envelope");
-    const blocks = document.getElementById("blocks");
-    const hint = document.getElementById("hint");
-    let clicks = 0;
+    </div>
 
-    envelope.addEventListener("click", () => {
-      clicks++;
-      envelope.classList.add("clicked");
-      setTimeout(() => envelope.classList.remove("clicked"), 300);
+    <!-- Screen 2: Letter -->
+    <div id="letterScreen" class="hidden text-center">
+        <div class="letter w-96 p-8 mx-auto" id="letter">
+            <div class="mb-6 text-6xl">🐧🐣</div>
+            <h2 class="font-dancing text-4xl font-semibold text-pink-800 mb-6" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.1);">
+                Will you go on a date with me?
+            </h2>
+            <p class="font-cormorant text-gray-700 mb-8 italic text-xl font-medium" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.05);">
+                "Every second with you is best memory of my life 💕"
+            </p>
+            
+            <div class="space-y-4">
+                <button onclick="acceptDate()" class="w-full bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white py-4 px-6 rounded-full text-xl font-bold transition-all transform hover:scale-105 shadow-lg">
+                    YESSSS! 💖
+                </button>
+                <button onclick="rejectDate()" class="w-full bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white py-4 px-6 rounded-full text-xl font-bold transition-all transform hover:scale-105 shadow-lg">
+                    FUCK OFF 😤
+                </button>
+            </div>
+        </div>
+    </div>
 
-      if (clicks >= 3 && !blocks.classList.contains("show")) {
-        blocks.classList.add("show");
-        hint.style.fontFamily = "'Dancing Script', cursive";
-        hint.textContent = "YOU REALLY ARE DETERMINED WOMAN 💖";
-        launchFancyConfetti();
-      }
-    });
+    <!-- Screen 3: Rejection -->
+    <div id="rejectionScreen" class="hidden text-center">
+        <div class="bg-white rounded-2xl p-12 shadow-2xl max-w-md mx-auto">
+            <div class="penguin broken-heart mb-6">💔🐧</div>
+            <h2 class="font-dancing text-4xl font-semibold text-red-600 mb-4" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.1);">
+                You are blocked!
+            </h2>
+            <p class="font-cormorant text-gray-600 mb-6 italic text-lg">
+                "My heart is shattered into a million pieces... 😢"
+            </p>
+            <div class="text-6xl mb-4">🚫</div>
+            <p class="text-sm text-gray-500 mb-6">
+                The penguin waddles away sadly...
+            </p>
+            <button onclick="refreshPage()" class="bg-gradient-to-r from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white py-3 px-6 rounded-full font-semibold transition-all transform hover:scale-105">
+                Reconsideration? 🥺
+            </button>
+        </div>
+    </div>
 
-    document.querySelectorAll('.block').forEach(block => {
-      block.addEventListener('click', () => block.classList.toggle('active'));
-    });
+    <!-- Screen 4: Date Options -->
+    <div id="dateOptionsScreen" class="hidden">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <div class="text-6xl mb-4">🐧💕</div>
+                <h2 class="font-vibes text-5xl text-pink-800 mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">
+                    Yay! Let's Plan Our Virtual Date! 🎉
+                </h2>
 
-    function launchFancyConfetti() {
-      const colors = ['#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#FF9F1C'];
-      for (let i = 0; i < 150; i++) {
-        const confetti = document.createElement('div');
-        confetti.classList.add('confetti');
-        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        confetti.style.width = (5 + Math.random() * 10) + 'px';
-        confetti.style.height = (8 + Math.random() * 12) + 'px';
-        confetti.style.left = Math.random() * window.innerWidth + 'px';
-        confetti.style.top = '-20px';
-        confetti.style.transform = `rotate(${Math.random()*360}deg)`;
-        document.body.appendChild(confetti);
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Play Games Together -->
+                <div class="date-card bg-gradient-to-br from-green-100 to-teal-100 rounded-2xl p-6 text-center" onclick="selectDate('Play Games Together')">
+                    <div class="text-5xl mb-4">🎮</div>
+                    <h3 class="font-dancing text-2xl font-semibold text-gray-800 mb-2">Play Games Together</h3>
+                    <p class="text-gray-600 text-sm">Play online games together and have fun</p>
+                </div>
 
-        const fallDuration = 2000 + Math.random()*2000;
-        const xMove = (Math.random()-0.5)*400;
-        const rotateAmount = (Math.random()-0.5)*720;
+                <!-- Movie Night -->
+                <div class="date-card bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl p-6 text-center" onclick="selectDate('Movie Night')">
+                    <div class="text-5xl mb-4">🍿</div>
+                    <h3 class="font-dancing text-2xl font-semibold text-gray-800 mb-2">Movie Night</h3>
+                    <p class="text-gray-600 text-sm">Watch movies together with synchronized streaming</p>
+                </div>
 
-        confetti.animate([
-          { transform: `translate(0,0) rotate(0deg)` },
-          { transform: `translate(${xMove}px, ${window.innerHeight + 50}px) rotate(${rotateAmount}deg)` }
-        ], { duration: fallDuration, easing: 'ease-out' });
+                <!-- Couples Quizzes -->
+                <div class="date-card bg-gradient-to-br from-red-100 to-pink-100 rounded-2xl p-6 text-center" onclick="selectDate('Couples Quizzes')">
+                    <div class="text-5xl mb-4">💕</div>
+                    <h3 class="font-dancing text-2xl font-semibold text-gray-800 mb-2">Couples Quizzes</h3>
+                    <p class="text-gray-600 text-sm">Take fun quizzes to learn more about each other</p>
+                </div>
 
-        setTimeout(() => confetti.remove(), fallDuration);
-      }
-    }
-    function createHeart(e) {
-      const heart = document.createElement('div');
-      heart.classList.add('heart');
-      heart.textContent = '💖';
-      const rect = e.currentTarget.getBoundingClientRect();
-      heart.style.left = (rect.left + rect.width/2 - 12) + 'px';
-      heart.style.top = (rect.top + rect.height/2 - 12) + 'px';
-      document.body.appendChild(heart);
-      setTimeout(() => heart.remove(), 1000);
-    }
+                <!-- Online City Tours -->
+                <div class="date-card bg-gradient-to-br from-yellow-100 to-orange-100 rounded-2xl p-6 text-center" onclick="selectDate('Online City Tours')">
+                    <div class="text-5xl mb-4">🏛️</div>
+                    <h3 class="font-dancing text-2xl font-semibold text-gray-800 mb-2">Online City Tours</h3>
+                    <p class="text-gray-600 text-sm">Explore cities around the world virtually</p>
+                </div>
 
-// Then attach the click listener
-    document.querySelectorAll('.block').forEach(block => {
-      block.addEventListener('click', () => {
-        launchPageConfetti(); // spawn confetti over whole page
-      });
-    });
+                <!-- Draw Together -->
+                <div class="date-card bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl p-6 text-center" onclick="selectDate('Draw Together')">
+                    <div class="text-5xl mb-4">🎨</div>
+                    <h3 class="font-dancing text-2xl font-semibold text-gray-800 mb-2">Draw Together</h3>
+                    <p class="text-gray-600 text-sm">Create art together on shared drawing apps</p>
+                </div>
 
-    function launchPageConfetti() {
-      const colors = ['#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#FF9F1C'];
-      for (let i = 0; i < 100; i++) { // number of confetti pieces
-        const confetti = document.createElement('div');
-        confetti.classList.add('confetti');
-        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        confetti.style.width = (5 + Math.random() * 10) + 'px';
-        confetti.style.height = (8 + Math.random() * 12) + 'px';
-        confetti.style.left = Math.random() * window.innerWidth + 'px';
-        confetti.style.top = '-20px';
-        document.body.appendChild(confetti);
+                <!-- Do Research Together -->
+                <div class="date-card bg-gradient-to-br from-indigo-100 to-blue-100 rounded-2xl p-6 text-center" onclick="selectDate('Do Research Together')">
+                    <div class="text-5xl mb-4">🔍</div>
+                    <h3 class="font-dancing text-2xl font-semibold text-gray-800 mb-2">Do Research Together</h3>
+                    <p class="text-gray-600 text-sm">Explore topics and learn new things together</p>
+                </div>
 
-        const fallDuration = 2000 + Math.random() * 2000;
-        const xMove = (Math.random() - 0.5) * 400;
-        const rotateAmount = (Math.random() - 0.5) * 720;
+                <!-- Random Quizzes -->
+                <div class="date-card bg-gradient-to-br from-green-100 to-lime-100 rounded-2xl p-6 text-center" onclick="selectDate('Random Quizzes')">
+                    <div class="text-5xl mb-4">🎲</div>
+                    <h3 class="font-dancing text-2xl font-semibold text-gray-800 mb-2">Random Quizzes</h3>
+                    <p class="text-gray-600 text-sm">Take fun random quizzes and trivia together</p>
+                </div>
 
-        confetti.animate([
-          { transform: `translate(0,0) rotate(0deg)`, opacity: 1 },
-          { transform: `translate(${xMove}px, ${window.innerHeight + 50}px) rotate(${rotateAmount}deg)`, opacity: 0 }
-        ], { duration: fallDuration, easing: 'ease-out' });
+                <!-- Chat Roulette Together -->
+                <div class="date-card bg-gradient-to-br from-amber-100 to-yellow-100 rounded-2xl p-6 text-center" onclick="selectDate('Chat Roulette Together')">
+                    <div class="text-5xl mb-4">💬</div>
+                    <h3 class="font-dancing text-2xl font-semibold text-gray-800 mb-2">Chat Roulette Together</h3>
+                    <p class="text-gray-600 text-sm">Meet random people online together</p>
+                </div>
 
-        setTimeout(() => confetti.remove(), fallDuration);
-      }
-    }
+                <!-- Watch Streams Together -->
+                <div class="date-card bg-gradient-to-br from-slate-100 to-gray-100 rounded-2xl p-6 text-center" onclick="selectDate('Watch Streams Together')">
+                    <div class="text-5xl mb-4">📺</div>
+                    <h3 class="font-dancing text-2xl font-semibold text-gray-800 mb-2">Watch Streams Together</h3>
+                    <p class="text-gray-600 text-sm">Watch live streams and content together</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  </script>
-</body>
+    <!-- Final Screen -->
+    <div id="finalScreen" class="hidden text-center">
+        <div class="bg-white rounded-2xl p-12 shadow-2xl max-w-md mx-auto">
+            <div class="text-6xl mb-6">🐧💕✨</div>
+            <h2 class="font-vibes text-4xl text-pink-800 mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">
+                Perfect Choice!
+            </h2>
+            <p class="font-dancing text-2xl text-gray-700 mb-6" id="selectedDateText">
+                <!-- Selected date will appear here -->
+            </p>
+            <p class="font-cormorant text-gray-600 italic mb-6 text-lg">
+                "I can't wait for our virtual date! This is going to be amazing! 🎉"
+            </p>
+            <button onclick="refreshPage()" class="bg-gradient-to-r from-pink-400 to-purple-500 hover:from-pink-500 hover:to-purple-600 text-white py-3 px-8 rounded-full font-semibold transition-all transform hover:scale-105">
+                Plan Another Date 💖
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let clickCount = 0;
+        const maxClicks = 3;
+
+        function tearEnvelope() {
+            clickCount++;
+            
+            const front = document.getElementById('envelopeFront');
+            const flap = document.getElementById('envelopeFlap');
+            
+            // Apply tearing effects based on click count
+            switch(clickCount) {
+                case 1:
+                    front.classList.add('torn-1');
+                    break;
+                case 2:
+                    flap.classList.add('torn-2');
+                    break;
+                case 3:
+                    front.classList.add('torn-5');
+                    flap.classList.add('torn-5');
+                    
+                    // Show letter after envelope is fully torn
+                    setTimeout(() => {
+                        document.getElementById('envelopeScreen').classList.add('hidden');
+                        document.getElementById('letterScreen').classList.remove('hidden');
+                        
+                        // Animate letter appearance
+                        setTimeout(() => {
+                            document.getElementById('letter').classList.add('show');
+                        }, 100);
+                    }, 800);
+                    break;
+            }
+        }
+
+        function acceptDate() {
+            // Make penguin celebrate
+            const penguinEmojis = document.querySelector('#letterScreen .mb-6');
+            penguinEmojis.innerHTML = '🐧🎉🐣✨';
+            penguinEmojis.classList.add('celebrating');
+            
+            // Show celebration message briefly
+            const letter = document.getElementById('letter');
+            letter.innerHTML = `
+                <div class="mb-6 text-6xl celebrating">🐧🎉🐣✨</div>
+                <h2 class="font-vibes text-4xl text-green-600 mb-6" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.1);">
+                    YAAAAY! 🎉
+                </h2>
+                <p class="font-cormorant text-gray-600 mb-8 italic text-xl">
+                    "This is the happiest day of my life! Let's plan something amazing! 💕"
+                </p>
+            `;
+            
+            // Transition to date options after celebration
+            setTimeout(() => {
+                document.getElementById('letterScreen').classList.add('hidden');
+                document.getElementById('dateOptionsScreen').classList.remove('hidden');
+            }, 2000);
+        }
+
+        function rejectDate() {
+            document.getElementById('letterScreen').classList.add('hidden');
+            document.getElementById('rejectionScreen').classList.remove('hidden');
+        }
+
+        function selectDate(dateType) {
+            document.getElementById('selectedDateText').textContent = `${dateType} it is! 🎉`;
+            document.getElementById('dateOptionsScreen').classList.add('hidden');
+            document.getElementById('finalScreen').classList.remove('hidden');
+        }
+
+        function refreshPage() {
+            location.reload();
+        }
+
+        function startOver() {
+            // Reset everything
+            clickCount = 0;
+            
+            // Reset envelope
+            document.getElementById('envelopeFront').className = 'envelope-part envelope-front';
+            document.getElementById('envelopeFlap').className = 'envelope-part envelope-flap';
+            document.getElementById('letter').classList.remove('show');
+            
+            // Show envelope screen
+            document.getElementById('finalScreen').classList.add('hidden');
+            document.getElementById('rejectionScreen').classList.add('hidden');
+            document.getElementById('dateOptionsScreen').classList.add('hidden');
+            document.getElementById('letterScreen').classList.add('hidden');
+            document.getElementById('envelopeScreen').classList.remove('hidden');
+        }
+
+        // Add some interactive sound effects (visual feedback)
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('date-card') || e.target.closest('.date-card')) {
+                // Create a small animation effect
+                const card = e.target.classList.contains('date-card') ? e.target : e.target.closest('.date-card');
+                card.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    card.style.transform = '';
+                }, 150);
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'970480bb50228bde',t:'MTc1NTM4NDc1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+
