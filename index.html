@@ -1,12 +1,11 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" href="apple-touch-icon.png"type="image/png">
+    <link rel="icon" href="favicon.png" type="image/png">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual Date Invitation</title>
+    <title>To My Fifita</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Great+Vibes&family=Playfair+Display:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap');
@@ -22,6 +21,7 @@
             height: 200px;
             cursor: pointer;
             transition: all 0.3s ease;
+            
         }
         
         .envelope:hover {
@@ -350,9 +350,79 @@
         .petal:nth-child(13) { left: 45%; animation-duration: 9s; animation-delay: 2.8s; }
         .petal:nth-child(14) { left: 55%; animation-duration: 10s; animation-delay: 0.3s; }
         .petal:nth-child(15) { left: 65%; animation-duration: 12s; animation-delay: 3.8s; }
+        
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confetti-fall linear forwards;
+            opacity: 0.9;
+        }
+        
+        .confetti.rectangle {
+            width: 12px;
+            height: 6px;
+        }
+        
+        .confetti.circle {
+            border-radius: 50%;
+        }
+        
+        .confetti.triangle {
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 10px solid;
+        }
+        
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg) scale(0.5);
+                opacity: 0;
+            }
+        }
+        
+        /* Smooth Screen Transitions */
+        .screen {
+            transition: all 1s cubic-bezier(0.4, 0.0, 0.2, 1);
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .screen.fade-out {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        
+        .screen.fade-in {
+            opacity: 0;
+            transform: scale(1.05);
+        }
     </style>
 </head>
-<body class="font-inter bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 min-h-screen flex items-center justify-center">
+<body class="font-inter bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 min-h-screen flex items-center justify-center" style="background: url('IMG-20250813-WA0001.png') no-repeat center/cover;">
     
     <!-- Rose Petals Background -->
     <div class="rose-petals">
@@ -373,8 +443,14 @@
         <div class="petal">🌹</div>
     </div>
     
+    <!-- Confetti Container -->
+    <div id="confettiContainer" class="confetti-container"></div>
+    
     <!-- Screen 1: Envelope -->
-    <div id="envelopeScreen" class="text-center">
+    <div id="envelopeScreen" class="screen text-center" >
+        <h2 class="font-vibes text-3xl text-pink-700 mb-4 floating" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">
+            For your eyes only, mi cielo ✨
+        </h2>
         <h1 class="font-vibes text-5xl text-pink-700 mb-8 floating" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">
             Aşşşkıımmm, I have envelope for youu 💌
         </h1>
@@ -394,7 +470,10 @@
     </div>
 
     <!-- Screen 2: Letter -->
-    <div id="letterScreen" class="hidden text-center">
+    <div id="letterScreen" class="screen hidden text-center">
+        <h2 class="font-vibes text-3xl text-pink-700 mb-6 floating" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">
+            You really are determined woman ✨
+        </h2>
         <div class="letter w-96 p-8 mx-auto" id="letter">
             <div class="mb-6 text-6xl">🐧🐣</div>
             <h2 class="font-dancing text-4xl font-semibold text-pink-800 mb-6" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.1);">
@@ -416,7 +495,7 @@
     </div>
 
     <!-- Screen 3: Rejection -->
-    <div id="rejectionScreen" class="hidden text-center">
+    <div id="rejectionScreen" class="screen hidden text-center">
         <div class="bg-white rounded-2xl p-12 shadow-2xl max-w-md mx-auto">
             <div class="penguin broken-heart mb-6">💔🐧</div>
             <h2 class="font-dancing text-4xl font-semibold text-red-600 mb-4" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.1);">
@@ -436,7 +515,7 @@
     </div>
 
     <!-- Screen 4: Date Options -->
-    <div id="dateOptionsScreen" class="hidden">
+    <div id="dateOptionsScreen" class="screen hidden">
         <div class="max-w-6xl mx-auto px-6">
             <div class="text-center mb-12">
                 <div class="text-6xl mb-4">🐧💕</div>
@@ -514,7 +593,7 @@
     </div>
 
     <!-- Final Screen -->
-    <div id="finalScreen" class="hidden text-center">
+    <div id="finalScreen" class="screen hidden text-center">
         <div class="bg-white rounded-2xl p-12 shadow-2xl max-w-md mx-auto">
             <div class="text-6xl mb-6">🐧💕✨</div>
             <h2 class="font-vibes text-4xl text-pink-800 mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">
@@ -524,7 +603,7 @@
                 <!-- Selected date will appear here -->
             </p>
             <p class="font-cormorant text-gray-600 italic mb-6 text-lg">
-                "I can't wait for our virtual date! This is going to be amazing! 🎉"
+                "I can't wait for our virtual date! This is going to be hilarious😉! 🎉"
             </p>
             <button onclick="refreshPage()" class="bg-gradient-to-r from-pink-400 to-purple-500 hover:from-pink-500 hover:to-purple-600 text-white py-3 px-8 rounded-full font-semibold transition-all transform hover:scale-105">
                 Plan Another Date 💖
@@ -535,6 +614,31 @@
     <script>
         let clickCount = 0;
         const maxClicks = 3;
+
+        // Smooth fade transition helper function
+        function transitionToScreen(fromScreenId, toScreenId) {
+            const fromScreen = document.getElementById(fromScreenId);
+            const toScreen = document.getElementById(toScreenId);
+            
+            // Start fade out for current screen
+            fromScreen.classList.add('fade-out');
+            
+            // After fade out completes, switch screens
+            setTimeout(() => {
+                // Hide outgoing screen and reset
+                fromScreen.classList.add('hidden');
+                fromScreen.classList.remove('fade-out');
+                
+                // Prepare incoming screen
+                toScreen.classList.remove('hidden');
+                toScreen.classList.add('fade-in');
+                
+                // Fade in the new screen
+                setTimeout(() => {
+                    toScreen.classList.remove('fade-in');
+                }, 50);
+            }, 500);
+        }
 
         function tearEnvelope() {
             clickCount++;
@@ -556,19 +660,65 @@
                     
                     // Show letter after envelope is fully torn
                     setTimeout(() => {
-                        document.getElementById('envelopeScreen').classList.add('hidden');
-                        document.getElementById('letterScreen').classList.remove('hidden');
+                        transitionToScreen('envelopeScreen', 'letterScreen');
                         
                         // Animate letter appearance
                         setTimeout(() => {
                             document.getElementById('letter').classList.add('show');
-                        }, 100);
+                        }, 600);
                     }, 800);
                     break;
             }
         }
 
+        function createConfetti() {
+            const confettiContainer = document.getElementById('confettiContainer');
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd', '#00d2d3', '#ff9f43', '#10ac84', '#ee5a24', '#0abde3', '#3742fa', '#2f3542'];
+            const shapes = ['rectangle', 'circle', 'triangle'];
+            
+            // Create 75 confetti pieces (increased by 50%)
+            for (let i = 0; i < 75; i++) {
+                const confetti = document.createElement('div');
+                const shape = shapes[Math.floor(Math.random() * shapes.length)];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                confetti.className = `confetti ${shape}`;
+                
+                // Set color based on shape
+                if (shape === 'triangle') {
+                    confetti.style.borderBottomColor = color;
+                } else {
+                    confetti.style.backgroundColor = color;
+                }
+                
+                // Random horizontal position
+                confetti.style.left = Math.random() * 100 + '%';
+                
+                // Random animation duration between 2-5 seconds
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                
+                // Random delay up to 1.5 seconds
+                confetti.style.animationDelay = Math.random() * 1.5 + 's';
+                
+                // Random size variation
+                const scale = Math.random() * 0.8 + 0.6;
+                confetti.style.transform = `scale(${scale})`;
+                
+                confettiContainer.appendChild(confetti);
+                
+                // Remove confetti after animation
+                setTimeout(() => {
+                    if (confetti.parentNode) {
+                        confetti.parentNode.removeChild(confetti);
+                    }
+                }, 7000);
+            }
+        }
+
         function acceptDate() {
+            // Trigger confetti celebration
+            createConfetti();
+            
             // Make penguin celebrate
             const penguinEmojis = document.querySelector('#letterScreen .mb-6');
             penguinEmojis.innerHTML = '🐧🎉🐣✨';
@@ -586,22 +736,19 @@
                 </p>
             `;
             
-            // Transition to date options after celebration
+            // Transition to date options after celebration (increased by 50%)
             setTimeout(() => {
-                document.getElementById('letterScreen').classList.add('hidden');
-                document.getElementById('dateOptionsScreen').classList.remove('hidden');
-            }, 2000);
+                transitionToScreen('letterScreen', 'dateOptionsScreen');
+            }, 3000);
         }
 
         function rejectDate() {
-            document.getElementById('letterScreen').classList.add('hidden');
-            document.getElementById('rejectionScreen').classList.remove('hidden');
+            transitionToScreen('letterScreen', 'rejectionScreen');
         }
 
         function selectDate(dateType) {
             document.getElementById('selectedDateText').textContent = `${dateType} it is! 🎉`;
-            document.getElementById('dateOptionsScreen').classList.add('hidden');
-            document.getElementById('finalScreen').classList.remove('hidden');
+            transitionToScreen('dateOptionsScreen', 'finalScreen');
         }
 
         function refreshPage() {
@@ -637,6 +784,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'970480bb50228bde',t:'MTc1NTM4NDc1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97049c0574c38a18',t:'MTc1NTM4NTg3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
-
